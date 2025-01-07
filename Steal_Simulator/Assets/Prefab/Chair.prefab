@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1434458121962423693}
   - component: {fileID: 2670331970786598795}
   - component: {fileID: 3317530260127951647}
+  - component: {fileID: 1729970929992020132}
   m_Layer: 0
   m_Name: Chair
   m_TagString: Untagged
@@ -46,19 +47,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2840f40f51ee52849a9349a7230340b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  price: 200
+  character: {fileID: 0}
   lootRange: 2
   lootTime: 2
   playerTag: Player
   enemyTag: Enemy
-  progressCircle: {fileID: 6151919776149511319}
   itemRenderer: {fileID: 0}
-  highlightMaterial: {fileID: 2100000, guid: 7a9f23c52dff86d40a8985a6899f8b53, type: 2}
+  rb: {fileID: 0}
   vehicleDropPoint: {fileID: 0}
-  flySpeed: 5
+  flySpeed: 200
   destroyDelay: 0.5
   isLooted: 0
   isLooting: 0
   isFlyingToVehicle: 0
+  progressCircle: {fileID: 6151919776149511319}
+  highlightMaterial:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!65 &3317530260127951647
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -80,6 +87,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 19.781805, y: 31.095226, z: 24.74366}
   m_Center: {x: -1.4008837, y: 8.193865, z: 3.4273129}
+--- !u!54 &1729970929992020132
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5471794762963654502}
+  serializedVersion: 4
+  m_Mass: 2
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &3251202753641174710
 PrefabInstance:
   m_ObjectHideFlags: 0

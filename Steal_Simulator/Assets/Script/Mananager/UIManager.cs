@@ -12,7 +12,10 @@ public class UIManager : Singleton<UIManager>
         base.Awake();
         InitializeUICanvases();
     }
-
+    void Start()
+    {
+        OpenUI<StartGame>();
+    }   
     // Khởi tạo tất cả UI Canvas, đặt chúng ở trạng thái không hoạt động
     private void InitializeUICanvases()
     {

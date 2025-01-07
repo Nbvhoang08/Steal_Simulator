@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using DG.Tweening;
-public class GamePlay : CanvasUI
+using System;
+public class GamePlay : CanvasUI,IObserver
 {
     // Start is called before the first frame update
     public Text textTimer;
@@ -37,6 +38,24 @@ public class GamePlay : CanvasUI
                 characters.Add(character);  // Thêm vào danh sách
             }
         }
+        if(gameManager == null)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
+        Subject.RegisterObserver(this);
+        
+    }
+    void OnDestroy()
+    {
+        Subject.UnregisterObserver(this);
+    }
+    public void OnNotify(string eventName, object eventData)
+    {
+        if(eventName == "updateRank")
+        {
+            UpdateCharacterInfo();
+            UpdateRanking();
+        }
     }
 
     void Start()
@@ -47,60 +66,19 @@ public class GamePlay : CanvasUI
             GameObject infoObject = Instantiate(InforPrefab, InforParent);
             characterInfoObjects.Add(character, infoObject);
         }
-    }
-
-    void Update()
-    {
-        // Cập nhật thông tin liên tục
-        
         UpdateCharacterInfo();
-        
 
-        // Sắp xếp thứ tự hiển thị dựa trên số tiền
-        UpdateRanking();
+    }
+    void Update()
+    {  
         if (gameManager != null)
         {
             int countdownTime = Mathf.Max(0, Mathf.FloorToInt(gameManager.countdownTime));
             textTimer.text = countdownTime.ToString();
            
-        }
-    }
-
-   private void UpdateCharacterInfo()
-    {
-        // Cập nhật thông tin UI của từng character
-        foreach (var character in characters)
+        }else
         {
-            if (characterInfoObjects.ContainsKey(character))
-            {
-                GameObject infoObject = characterInfoObjects[character];
-
-                // Cập nhật tên và số tiền
-                Text nameText = infoObject.transform.Find("Name").GetComponent<Text>();
-                Text moneyText = infoObject.transform.Find("Money").GetComponent<Text>();
-                Image characterImage = infoObject.transform.Find("CharacterImage").GetComponent<Image>();
-
-                // Cập nhật tên và số tiền
-                nameText.text = character.Name;
-                moneyText.text = character.Money.ToString();
-
-                // Thay đổi hình ảnh của character dựa trên CharacterType
-                switch (character.Type)
-                {
-                    case CharacterType.Blue:
-                        characterImage.sprite = blueSprite;
-                        break;
-                    case CharacterType.Red:
-                        characterImage.sprite = redSprite;
-                        break;
-                    case CharacterType.Pink:
-                        characterImage.sprite = pinkSprite;
-                        break;
-                    case CharacterType.Yellow:
-                        characterImage.sprite = yellowSprite;
-                        break;
-                }
-            }
+            gameManager = FindObjectOfType<GameManager>();
         }
     }
 
@@ -131,6 +109,45 @@ public class GamePlay : CanvasUI
             infoObject.transform.SetSiblingIndex(i); 
         }
     }
+   private void UpdateCharacterInfo()
+    {
+        // Cập nhật thông tin UI của từng character
+        foreach (var character in characters)
+        {
+            if (characterInfoObjects.ContainsKey(character))
+            {
+                GameObject infoObject = characterInfoObjects[character];
+
+                // Cập nhật tên và số tiền
+                Text nameText = infoObject.transform.Find("Name").GetComponent<Text>();
+                Text moneyText = infoObject.transform.Find("Money").GetComponent<Text>();
+                Image characterImage = infoObject.GetComponent<Image>();
+
+                // Cập nhật tên và số tiền
+                nameText.text = character.Name;
+                moneyText.text = '$'+character.Money.ToString();
+
+                // Thay đổi hình ảnh của character dựa trên CharacterType
+                switch (character.Type)
+                {
+                    case CharacterType.Blue:
+                        characterImage.sprite = blueSprite;
+                        break;
+                    case CharacterType.Red:
+                        characterImage.sprite = redSprite;
+                        break;
+                    case CharacterType.Pink:
+                        characterImage.sprite = pinkSprite;
+                        break;
+                    case CharacterType.Yellow:
+                        characterImage.sprite = yellowSprite;
+                        break;
+                }
+            }
+        }
+    }
+
+    
     // Update is called once per frame
     
 }

@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour , IObserver
     [SerializeField] private UnityEngine.Playables.PlayableDirector introTimeline; // Timeline
     [SerializeField] private bool isCountingDown = false;
     public float countdownTime = 30f;
+    public float time;
     public bool GameOver { get; private set; } = false;
     public static GameManager Instance { get; private set; }
     public void Awake()
@@ -29,24 +30,29 @@ public class GameManager : MonoBehaviour , IObserver
     }
     private void StartCountdown()
     {
-        countdownTime = 30f; // Đặt lại thời gian đếm ngược
+        countdownTime = time; // Đặt lại thời gian đếm ngược
         isCountingDown = true; // Bắt đầu đếm ngược
     }
 
     void Start()
     {
-        // Đăng ký sự kiện khi Scene được chuyển đổi
-          // Lắng nghe sự kiện kết thúc Timeline
+        
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+    public void StartGame()
+    {
         if (introTimeline != null)
         {
             introTimeline.stopped += OnIntroFinished;
             introTimeline.Play();
         }
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
-    }
-     private void OnIntroFinished(UnityEngine.Playables.PlayableDirector director)
+    }   
+    private void OnIntroFinished(UnityEngine.Playables.PlayableDirector director)
     {
-        UIManager.Instance.OpenUI<StartGame>();
+        UIManager.Instance.CloseUI<StartGame>(0.2f);    
+        UIManager.Instance.OpenUI<GamePlay>();
+        StartCountdown();
+
     }
     private void OnSceneUnloaded(Scene current)
     {
@@ -59,7 +65,6 @@ public class GameManager : MonoBehaviour , IObserver
         if (Instance == this)
         {
             Subject.UnregisterObserver(this); // Hủy đăng ký observer
-            CancelInvoke("SpawnObject");
             Instance = null; // Làm rỗng instance
         }
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
@@ -84,7 +89,7 @@ public class GameManager : MonoBehaviour , IObserver
     }
     private void EndGame()
     {
-        Subject.NotifyObservers("End");
-        Time.timeScale = 0;
+        // Subject.NotifyObservers("End");
+        // Time.timeScale = 0;
     } 
 }

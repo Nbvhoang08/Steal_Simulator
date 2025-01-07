@@ -7,7 +7,7 @@ public class StartGame : CanvasUI
    // Start is called before the first frame update
     public RectTransform[] childElements; // Các phần tử con
     public float animationDuration = 0.5f; // Thời gian hiệu ứng
-
+    public  GameManager gameManager;
     public Vector2[] initialPositions;
     [Header("Sound Setting")]
     public Sprite OnVolume;
@@ -28,9 +28,17 @@ public class StartGame : CanvasUI
             childElements[i].anchoredPosition += new Vector2(-Screen.width, 0);
               // Đăng ký sự kiện OnClic
         }
+        if(gameManager == null)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
     }
     void Update()
     {
+        if(gameManager == null)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }else
         UpdateButtonImage();
     }
 
@@ -99,13 +107,12 @@ public class StartGame : CanvasUI
         }
 
         // Sau khi hoàn tất hiệu ứng, mở giao diện mới
-        sequence.OnComplete(() =>
-        {
-            UIManager.Instance.CloseUI<StartGame>(0.2f);
-            Subject.NotifyObservers("startGame");
-           
-      
-        });
+        // sequence.OnComplete(() =>
+        // {
+            
+        //     Subject.NotifyObservers("startGame");
+            
+        // });
     }
      public void SoundBtn()
     {
@@ -130,6 +137,7 @@ public class StartGame : CanvasUI
     public void StartBtn()
     {
         HideUI();
+        gameManager.StartGame();
         SoundManager.Instance.PlayClickSound();
     }
     

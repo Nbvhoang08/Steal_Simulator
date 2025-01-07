@@ -7,12 +7,20 @@ public class Character : MonoBehaviour, IObserver
     public int Money;
     public string Name;
     public CharacterType Type;
-
+    void Awake()
+    {
+        Subject.RegisterObserver(this);
+    }
+    void OnDestroy()
+    {
+        Subject.UnregisterObserver(this);
+    }
     public void OnNotify(string eventName, object eventData)
     {
-         if (eventName == "AddMoney")
+        if (eventName == "AddMoney")
         {
             // Kiểm tra xem dữ liệu có chứa thông tin Character và Price
+            Debug.Log("tiền về");
             var eventInfo = eventData as dynamic;
             if (eventInfo != null)
             {
@@ -27,8 +35,8 @@ public class Character : MonoBehaviour, IObserver
     }
     public void AddMoney(int money)
     {
-
         Money += money;
+        Subject.NotifyObservers("updateRank");
     }
 
 }

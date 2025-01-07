@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8147786692731527023}
+  - component: {fileID: -3966408388842040442}
   m_Layer: 0
   m_Name: Wardrobe
   m_TagString: Untagged
@@ -32,6 +33,37 @@ Transform:
   - {fileID: 8164582661004162553}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3966408388842040442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3391180483680450691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2840f40f51ee52849a9349a7230340b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  price: 0
+  character: {fileID: 0}
+  lootRange: 2
+  lootTime: 2
+  playerTag: Player
+  enemyTag: Enemy
+  progressCircle: {fileID: 0}
+  itemRenderer: {fileID: 0}
+  vehicleDropPoint: {fileID: 0}
+  flySpeed: 5
+  destroyDelay: 0.1
+  isLooted: 0
+  isLooting: 0
+  isFlyingToVehicle: 0
+  highlightMaterial:
+  - {fileID: 2100000, guid: 4640055cbc6490a44be925116739ab1d, type: 2}
+  - {fileID: 2100000, guid: 4abdec55797f8624092a7ba9c29352a3, type: 2}
+  - {fileID: 2100000, guid: d658f78c7ade90043a7cbb33b234ec9f, type: 2}
+  - {fileID: 2100000, guid: ca075e74c860f654cbc0163b76647aa8, type: 2}
 --- !u!1001 &8558200287125967378
 PrefabInstance:
   m_ObjectHideFlags: 0
