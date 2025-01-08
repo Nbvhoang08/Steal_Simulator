@@ -55,35 +55,36 @@ public class Player : Character
     }
     void FixedUpdate()
     {
-        float horizontal = joystick.Horizontal;
-        float vertical = joystick.Vertical;
-        
-        Vector3 moveDirection = new Vector3(horizontal, 0, vertical);
-        if (moveDirection.magnitude > 0.1f)
+        if(joystick != null)
         {
-            // Normalize the move direction to ensure consistent speed
-            moveDirection.Normalize();
-            isMoving = true;
-            // Apply movement through Rigidbody velocity
-            Vector3 targetVelocity = moveDirection * speed;
-            targetVelocity.y = _rb.velocity.y; // Retain current vertical velocity (e.g., gravity effect)
-            _rb.velocity = targetVelocity;
+            float horizontal = joystick.Horizontal;
+            float vertical = joystick.Vertical;
+            Vector3 moveDirection = new Vector3(horizontal, 0, vertical);
+            if (moveDirection.magnitude > 0.1f)
+            {
+                // Normalize the move direction to ensure consistent speed
+                moveDirection.Normalize();
+                isMoving = true;
+                // Apply movement through Rigidbody velocity
+                Vector3 targetVelocity = moveDirection * speed;
+                targetVelocity.y = _rb.velocity.y; // Retain current vertical velocity (e.g., gravity effect)
+                _rb.velocity = targetVelocity;
 
-            // Rotate the player to face the movement direction
-            Quaternion toRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, speed * 100 * Time.fixedDeltaTime);
-        }
-        else
-        {
-            // Stop horizontal movement if joystick is idle
-            Vector3 idleVelocity = _rb.velocity;
-            isMoving = false;
-            idleVelocity.x = 0;
-            idleVelocity.z = 0;
-            _rb.velocity = idleVelocity;
+                // Rotate the player to face the movement direction
+                Quaternion toRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, speed * 100 * Time.fixedDeltaTime);
+            }
+            else
+            {
+                // Stop horizontal movement if joystick is idle
+                Vector3 idleVelocity = _rb.velocity;
+                isMoving = false;
+                idleVelocity.x = 0;
+                idleVelocity.z = 0;
+                _rb.velocity = idleVelocity;
             
+            }
         }
-    
     }  
    
 }

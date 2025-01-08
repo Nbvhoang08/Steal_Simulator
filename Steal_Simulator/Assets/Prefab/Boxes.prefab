@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2840f40f51ee52849a9349a7230340b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  price: 0
+  price: 50
   character: {fileID: 0}
   lootRange: 9.72
   lootTime: 2

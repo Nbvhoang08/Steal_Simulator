@@ -140,6 +140,7 @@ public class Item : MonoBehaviour , IObserver
     [SerializeField] private Material[] highlightMaterial;  // Material highlight
     private void Loot(Transform looter)
     {
+        SoundManager.Instance.PlayVFXSound(0);
         transform.SetParent(looter);
         character  = GetComponentInParent<Character>();
         character.lootedItem = GetComponent<Item>();
@@ -169,6 +170,7 @@ public class Item : MonoBehaviour , IObserver
         // Kiểm tra nếu item đã đến xe
         if (Vector3.Distance(transform.position, vehicleDropPoint.position) < 50f)
         {
+           
             DestroyItem();
         }
     }

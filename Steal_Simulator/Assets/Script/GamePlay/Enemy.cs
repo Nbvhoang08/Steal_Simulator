@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-public class Enemy : Character , IObserver
+public class Enemy : Character
 {
     public Transform carPosition; // Vị trí của xe
     public float lootRange = 50f; // Phạm vi loot
@@ -21,9 +21,10 @@ public class Enemy : Character , IObserver
     public override void OnNotify(string eventName, object eventData)
     {
         base.OnNotify(eventName, eventData);
+        
         if(eventName == "StartGame")
         {
-            letMoving = true ;
+            letMoving = true;
         }
         if(eventName == "End")
         {

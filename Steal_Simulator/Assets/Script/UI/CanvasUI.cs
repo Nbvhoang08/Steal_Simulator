@@ -17,7 +17,6 @@ public class CanvasUI : MonoBehaviour
             rect.offsetMin = leftBottom;
             rect.offsetMax = rightTop;
         }
-        //Debug.Log(ratio);
     }
 
     public virtual void Setup()

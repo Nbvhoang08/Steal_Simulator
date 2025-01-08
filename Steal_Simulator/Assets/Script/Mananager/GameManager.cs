@@ -56,11 +56,9 @@ public class GameManager : MonoBehaviour , IObserver
         Subject.NotifyObservers("StartGame");
 
     }
-     private void OnOuttroFinished(UnityEngine.Playables.PlayableDirector director)
+    private void OnOuttroFinished(UnityEngine.Playables.PlayableDirector director)
     {
         UIManager.Instance.OpenUI<EndGame>();
-        
-        Time.timeScale = 0;
     }
     private void OnSceneUnloaded(Scene current)
     {

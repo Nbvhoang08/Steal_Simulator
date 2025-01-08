@@ -8,6 +8,7 @@ public class Character : MonoBehaviour, IObserver
     public string Name;
     public CharacterType Type;
     public Item lootedItem; 
+    private Character Instance;
     void Awake()
     {
         Subject.RegisterObserver(this);
@@ -38,6 +39,7 @@ public class Character : MonoBehaviour, IObserver
         Money += money;
         Subject.NotifyObservers("updateRank");
         lootedItem = null;
+        SoundManager.Instance.PlayVFXSound(1);
     }
 
 }

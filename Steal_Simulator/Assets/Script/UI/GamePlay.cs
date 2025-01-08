@@ -3,15 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using DG.Tweening;
-using System;
-public class GamePlay : CanvasUI,IObserver
-{
-    // Start is called before the first frame update
-    public Text textTimer;
-    public Player player;
-    public GameManager gameManager; 
+using System.Collections;
 
-     [Header("Character Settings")]
+public class GamePlay : CanvasUI, IObserver
+{
+    public Text textTimer;
+    public GameManager gameManager;
+
+    [Header("Character Settings")]
     public List<Character> characters;
 
     [Header("UI Settings")]
@@ -24,129 +23,151 @@ public class GamePlay : CanvasUI,IObserver
     public Sprite pinkSprite;
     public Sprite yellowSprite;
 
-    private Dictionary<Character, GameObject> characterInfoObjects = new Dictionary<Character, GameObject>();
+    // List để thay thế cho Dictionary trong Inspector
+    [Header("Character Info List")]
+    public List<CharacterInfo> characterInfoList = new List<CharacterInfo>();
+
+    
+
     void Awake()
     {
-        // Tìm tất cả các đối tượng có component Character trong scene
-        Character[] foundCharacters = FindObjectsOfType<Character>();
-
-        // Kiểm tra mỗi đối tượng xem có sẵn trong danh sách characters chưa
-        foreach (var character in foundCharacters)
-        {
-            if (!characters.Contains(character))  // Nếu không có trong danh sách
-            {
-                characters.Add(character);  // Thêm vào danh sách
-            }
-        }
-        if(gameManager == null)
+        if (gameManager == null)
         {
             gameManager = FindObjectOfType<GameManager>();
         }
         Subject.RegisterObserver(this);
-        
     }
+
     void OnDestroy()
     {
         Subject.UnregisterObserver(this);
     }
+
     public void OnNotify(string eventName, object eventData)
     {
-        if(eventName == "updateRank")
+        if (eventName == "updateRank")
         {
-            UpdateCharacterInfo();
+            updateText();
             UpdateRanking();
         }
+        if (eventName == "StartGame")
+        {
+            characters = new List<Character>();
+            // Tìm tất cả các đối tượng có component Character trong scene
+            Character[] foundCharacters = FindObjectsOfType<Character>();
+
+            foreach (var character in foundCharacters)
+            {
+                if (!characters.Contains(character))
+                {
+                    characters.Add(character);
+                }
+            }
+            foreach (Transform child in InforParent)
+            {
+                Destroy(child.gameObject);
+            }
+            StartCoroutine(loadData());
+        }
     }
 
-    void Start()
+    IEnumerator loadData()
     {
-        // Khởi tạo thông tin ban đầu cho từng nhân vật
-        foreach (var character in characters)
-        {
-            GameObject infoObject = Instantiate(InforPrefab, InforParent);
-            characterInfoObjects.Add(character, infoObject);
-        }
+        yield return new WaitForSeconds(1);
         UpdateCharacterInfo();
     }
-    void Update()
-    {  
-        if (gameManager != null)
-        {
-            int countdownTime = Mathf.Max(0, Mathf.FloorToInt(gameManager.countdownTime));
-            textTimer.text = countdownTime.ToString();
-           
-        }else
-        {
-            gameManager = FindObjectOfType<GameManager>();
-        }
-    }
 
-    private void UpdateRanking()
+    void UpdateRanking()
     {
-        // Sắp xếp danh sách characters theo số tiền giảm dần
         var sortedCharacters = characters.OrderByDescending(c => c.Money).ToList();
-
-        // Cập nhật thứ tự xếp hạng trong bảng xếp hạng
         UpdateRankingUIWithAnimation(sortedCharacters);
     }
 
     private void UpdateRankingUIWithAnimation(List<Character> sortedCharacters)
     {
-        // Thay đổi thứ tự xếp hạng trong UI với hiệu ứng di chuyển
         for (int i = 0; i < sortedCharacters.Count; i++)
         {
-            GameObject infoObject = characterInfoObjects[sortedCharacters[i]];
-
-            // Tính toán vị trí mới (relative position)
+            var characterInfo = characterInfoList.FirstOrDefault(x => x.character == sortedCharacters[i]);
+            if (characterInfo == null)
+            {
+                Debug.LogError($"Character {sortedCharacters[i]} không có trong characterInfoList!");
+                continue;
+            }
+            GameObject infoObject = characterInfo.infoObject;
             Vector3 newPosition = infoObject.transform.localPosition;
-            newPosition.y = -i * 100f;  // Chỉnh sửa khoảng cách giữa các item (ví dụ: 100 đơn vị)
-
-            // Di chuyển object đến vị trí mới với animation (0.5 giây)
+            newPosition.y = -i * 75f;  // Chỉnh sửa khoảng cách giữa các item (ví dụ: 100 đơn vị)
             infoObject.transform.DOLocalMove(newPosition, 0.5f).SetEase(Ease.OutQuad);
-
-            // Cập nhật lại thứ tự xếp hạng trong hierarchy (giữ đúng thứ tự)
-            infoObject.transform.SetSiblingIndex(i); 
+            infoObject.transform.SetSiblingIndex(i);
         }
     }
+    void updateText()
+    {
+        foreach(CharacterInfo info in characterInfoList )
+        {
+            Text nameText = info.infoObject.transform.Find("Name").GetComponent<Text>();
+            Text moneyText = info.infoObject.transform.Find("Money").GetComponent<Text>();
+            nameText.text = info.character.Name;
+            moneyText.text = '$' + info.character.Money.ToString();
+        }
+    }
+
    private void UpdateCharacterInfo()
     {
-        // Cập nhật thông tin UI của từng character
+     // Làm sạch tất cả các đối tượng con của parent
+       
+        characterInfoList.Clear();
+        // Tạo lại thông tin cho mỗi character và thêm vào list
         foreach (var character in characters)
         {
-            if (characterInfoObjects.ContainsKey(character))
+            GameObject infoObject = Instantiate(InforPrefab, InforParent);
+            CharacterInfo characterInfo = new CharacterInfo
             {
-                GameObject infoObject = characterInfoObjects[character];
+                    character = character,
+                    infoObject = infoObject
+                };
+                characterInfoList.Add(characterInfo);
+            // Cập nhật thông tin UI
+            Text nameText = infoObject.transform.Find("Name").GetComponent<Text>();
+            Text moneyText = infoObject.transform.Find("Money").GetComponent<Text>();
+            Image characterImage = infoObject.GetComponent<Image>();
 
-                // Cập nhật tên và số tiền
-                Text nameText = infoObject.transform.Find("Name").GetComponent<Text>();
-                Text moneyText = infoObject.transform.Find("Money").GetComponent<Text>();
-                Image characterImage = infoObject.GetComponent<Image>();
+            nameText.text = character.Name;
+            moneyText.text = '$' + character.Money.ToString();
 
-                // Cập nhật tên và số tiền
-                nameText.text = character.Name;
-                moneyText.text = '$'+character.Money.ToString();
-
-                // Thay đổi hình ảnh của character dựa trên CharacterType
-                switch (character.Type)
-                {
-                    case CharacterType.Blue:
-                        characterImage.sprite = blueSprite;
-                        break;
-                    case CharacterType.Red:
-                        characterImage.sprite = redSprite;
-                        break;
-                    case CharacterType.Pink:
-                        characterImage.sprite = pinkSprite;
-                        break;
-                    case CharacterType.Yellow:
-                        characterImage.sprite = yellowSprite;
-                        break;
-                }
-            }
+            // Thay đổi hình ảnh của character dựa trên CharacterType
+            switch (character.Type)
+            {
+                case CharacterType.Blue:
+                    characterImage.sprite = blueSprite;
+                    break;
+                case CharacterType.Red:
+                    characterImage.sprite = redSprite;
+                    break;
+                case CharacterType.Pink:
+                    characterImage.sprite = pinkSprite;
+                    break;
+                case CharacterType.Yellow:
+                    characterImage.sprite = yellowSprite;
+                    break;
+            }   
         }
     }
-
-    
-    // Update is called once per frame
-    
+    void Update()
+    {
+        if (gameManager != null)
+        {
+            int countdownTime = Mathf.Max(0, Mathf.FloorToInt(gameManager.countdownTime));
+            textTimer.text = countdownTime.ToString();
+        }
+        else
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
+    }
 }
+[System.Serializable]
+    public class CharacterInfo
+    {
+        public Character character;
+        public GameObject infoObject;
+    }
