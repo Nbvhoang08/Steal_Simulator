@@ -24,7 +24,7 @@ public class Item : MonoBehaviour , IObserver
     [SerializeField] private float flySpeed = 5f;        // Tốc độ bay về xe
     [SerializeField] private float destroyDelay = 0.1f;  // Thời gian delay trước khi hủy item
 
-    [SerializeField] private bool isLooted = false;         // Trạng thái đã loot
+    public bool isLooted = false;         // Trạng thái đã loot
     [SerializeField] private bool isLooting = false;        // Đang bị loot hay không
     [SerializeField] private bool isFlyingToVehicle = false; // Trạng thái đang bay đến xe
     private float lootTimer = 0f;          // Bộ đếm thời gian loot
@@ -41,9 +41,7 @@ public class Item : MonoBehaviour , IObserver
     }
     private void OnDestroy()
     {
-   
         Subject.UnregisterObserver(this); // Hủy đăng ký observer
-
     }
     public void OnNotify(string eventName, object eventData)
     {
@@ -109,7 +107,7 @@ public class Item : MonoBehaviour , IObserver
 
                 // Kiểm tra nếu looter đứng yên
                 Rigidbody rb = currentLooter.GetComponent<Rigidbody>();
-                if (rb != null && rb.velocity.magnitude < 0.1f)
+                if (rb != null && rb.velocity.magnitude < 0.1f  &&  collider.gameObject.GetComponent<Character>().lootedItem == null)
                 {
                     lootTimer += Time.deltaTime;
 
@@ -120,7 +118,6 @@ public class Item : MonoBehaviour , IObserver
                         ShowProgressUI(true);
                         UpdateProgressCircle(lootTimer / lootTime);
                     }
-
                     if (lootTimer >= lootTime)
                     {
                         Loot(currentLooter);
@@ -145,6 +142,7 @@ public class Item : MonoBehaviour , IObserver
     {
         transform.SetParent(looter);
         character  = GetComponentInParent<Character>();
+        character.lootedItem = GetComponent<Item>();
         isLooted = true;
         isLooting = true;
         rb.useGravity = false;

@@ -139,6 +139,7 @@ public class StartGame : CanvasUI
         HideUI();
         gameManager.StartGame();
         SoundManager.Instance.PlayClickSound();
+        
     }
     
     private void OnButtonClick(Button button)

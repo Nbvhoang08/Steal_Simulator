@@ -1,107 +1,132 @@
-using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-public class Enemy : Character
+public class Enemy : Character , IObserver
 {
-     public Transform carPosition; // Vị trí của xe
-    public float lootRange = 2f; // Phạm vi loot
+    public Transform carPosition; // Vị trí của xe
+    public float lootRange = 50f; // Phạm vi loot
     public float lootTime = 3f; // Thời gian loot
-    private bool isLooting = false;
-    private bool hasLooted = false;
     private NavMeshAgent agent;
-    private Transform currentItem;
-    private float lootTimer = 0f;
+    public Transform currentItem;
+    public bool letMoving;
+    public Animator anim; // Animator của nhân vật
+    [SerializeField] private bool isReturningToCar = false;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>(); // Lấy NavMeshAgent để di chuyển
+        letMoving = false;
     }
-
+    public override void OnNotify(string eventName, object eventData)
+    {
+        base.OnNotify(eventName, eventData);
+        if(eventName == "StartGame")
+        {
+            letMoving = true ;
+        }
+        if(eventName == "End")
+        {
+            letMoving = false;
+        }
+    }
     void Update()
     {
-        if (hasLooted) return;
+        if(!letMoving) return;
+        // Điều khiển animation dựa trên trạng thái di chuyển
+        bool isMoving = agent.velocity.magnitude > 0.1f;
+        anim.SetBool("run", isMoving);
 
-        if (isLooting)
+        // Nếu đã loot xong item, di chuyển về xe
+        if (lootedItem != null)
         {
-            LootItem();
-        }
-        else
+            if (!isReturningToCar)
+            {
+                MoveToCar();
+            }
+            return;
+        }else
         {
-            // Nếu chưa loot, di chuyển đến item
+           if(isReturningToCar)
+           {
+                isReturningToCar = false;
+           }
+            // Nếu có mục tiêu hiện tại, di chuyển đến đó
             if (currentItem != null)
             {
                 MoveToItem(currentItem);
             }
             else
             {
-                // Tìm item gần nhất để loot
-                FindNearestItem();
+                // Tìm item ngẫu nhiên để loot
+                FindRandomItem();
             }
         }
     }
-
-    // Tìm item gần nhất
-    private void FindNearestItem()
+    // Tìm item ngẫu nhiên để loot
+    private void FindRandomItem()
     {
-       // Lấy tất cả các đối tượng có kiểu Item
         Item[] items = GameObject.FindObjectsOfType<Item>();
-    
-        if (items.Length > 0)
-        {
-            // Chọn ngẫu nhiên một đối tượng Item
-            Item randomItem = items[Random.Range(0, items.Length)];
 
-            // Di chuyển đến đối tượng Item ngẫu nhiên
-            currentItem = randomItem.transform;
+        // Lọc ra các item chưa bị loot
+        List<Item> availableItems = new List<Item>();
+        foreach (var item in items)
+        {
+            if (!item.isLooted)
+            {
+                availableItems.Add(item);
+            }
+        }
+
+        if (availableItems.Count > 0)
+        {
+            // Chọn item ngẫu nhiên
+            currentItem = availableItems[Random.Range(0, availableItems.Count)].transform;
+
+            // Di chuyển đến mục tiêu
             agent.SetDestination(currentItem.position);
+            agent.isStopped = false;
         }
         else
         {
-            Debug.LogWarning("No items found in the scene.");
+            currentItem = null;
+            agent.isStopped = true; // Đứng yên nếu không có item nào để loot
         }
     }
 
     // Di chuyển đến item
     private void MoveToItem(Transform item)
     {
-        if (Vector3.Distance(transform.position, item.position) <= lootRange)
+        if (item == null || item.GetComponent<Item>().isLooted)
         {
-            // Đến gần item, bắt đầu loot
-            StartLooting();
+            currentItem = null;
+            FindRandomItem(); // Tìm item khác
+            return;
         }
-        else
+
+        // Di chuyển đến item
+        if (!agent.pathPending && agent.remainingDistance > lootRange)
         {
             agent.SetDestination(item.position);
         }
     }
 
-    // Bắt đầu loot item
-    private void StartLooting()
+    // Khi chạm vào item, bắt đầu loot
+    private void OnTriggerEnter(Collider other)
     {
-        isLooting = true;
-        lootTimer = 0f;
-        // Bật UI loot và các hiệu ứng khác nếu cần
-    }
-
-    // Thực hiện loot item
-    private void LootItem()
-    {
-        lootTimer += Time.deltaTime;
-
-        if (lootTimer >= lootTime)
-        {
-            // Loot xong
-            hasLooted = true;
-            isLooting = false;
-
-            // Di chuyển đến xe
-            agent.SetDestination(carPosition.position);
-
-            // Bật UI loot thành công nếu cần
+       if (currentItem != null && other.transform == currentItem)
+        {   
+          
+            agent.isStopped = true; // Dừng di chuyển
+            agent.velocity = Vector3.zero;    // Loại bỏ quán tính hoàn toàn
         }
     }
-
-    // Hiển thị UI loot
+    // Di chuyển về vị trí xe
+    private void MoveToCar()
+    {
+        isReturningToCar = true;
+        agent.isStopped = false;
+        agent.SetDestination(carPosition.position);
+    }
   
 }

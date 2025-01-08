@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -4202929502631336420}
   - component: {fileID: 8645902593259033824}
   - component: {fileID: 6064484199832979775}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: bed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,9 +180,17 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -5079043570290908656, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
       propertyPath: m_Name
       value: geo_bed
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6622772148810292637, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -236,6 +244,14 @@ PrefabInstance:
     - target: {fileID: 684179919328901957, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 684179919328901957, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5141819712700914183, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5658330724563136133, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
       propertyPath: m_AnchorMax.x

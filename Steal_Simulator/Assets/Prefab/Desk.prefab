@@ -54,7 +54,7 @@ MonoBehaviour:
   lootTime: 2
   playerTag: Player
   enemyTag: Enemy
-  itemRenderer: {fileID: 0}
+  itemRenderer: {fileID: 2990347899087079}
   rb: {fileID: 0}
   vehicleDropPoint: {fileID: 0}
   flySpeed: 200
@@ -356,6 +356,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+--- !u!23 &2990347899087079 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3988834186967329349, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+  m_PrefabInstance: {fileID: 5237211121817451868}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5702954302840642231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}

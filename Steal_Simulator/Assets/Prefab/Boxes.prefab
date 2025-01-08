@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5329366537146209528}
   - component: {fileID: 8831292321600080837}
   - component: {fileID: 3459216882538343105}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Boxes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ MonoBehaviour:
   lootTime: 2
   playerTag: Player
   enemyTag: Enemy
-  itemRenderer: {fileID: 0}
+  itemRenderer: {fileID: 927698924033712730}
   rb: {fileID: 0}
   vehicleDropPoint: {fileID: 0}
   flySpeed: 200
@@ -196,6 +196,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: full
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1995175991144791980, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3122754845909395217, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
@@ -224,6 +232,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
   m_PrefabInstance: {fileID: 1043944782498558560}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &927698924033712730 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -9033359392720269254, guid: 5042d19fd34818d45ba4f4a1efa0e09b, type: 3}
+  m_PrefabInstance: {fileID: 1043944782498558560}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6671126493309199296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -235,6 +248,14 @@ PrefabInstance:
     - target: {fileID: 684179919328901957, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 684179919328901957, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5141819712700914183, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5658330724563136133, guid: d6288a2b7821c8a4eae677c66eeefd1d, type: 3}
       propertyPath: m_AnchorMax.x

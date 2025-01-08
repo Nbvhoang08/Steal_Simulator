@@ -4,6 +4,7 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour , IObserver
 {
     [SerializeField] private UnityEngine.Playables.PlayableDirector introTimeline; // Timeline
+    public UnityEngine.Playables.PlayableDirector outroTimeline;
     [SerializeField] private bool isCountingDown = false;
     public float countdownTime = 30f;
     public float time;
@@ -52,7 +53,14 @@ public class GameManager : MonoBehaviour , IObserver
         UIManager.Instance.CloseUI<StartGame>(0.2f);    
         UIManager.Instance.OpenUI<GamePlay>();
         StartCountdown();
+        Subject.NotifyObservers("StartGame");
 
+    }
+     private void OnOuttroFinished(UnityEngine.Playables.PlayableDirector director)
+    {
+        UIManager.Instance.OpenUI<EndGame>();
+        
+        Time.timeScale = 0;
     }
     private void OnSceneUnloaded(Scene current)
     {
@@ -84,12 +92,15 @@ public class GameManager : MonoBehaviour , IObserver
                 return;
             }
         }
-       
-
     }
     private void EndGame()
     {
-        // Subject.NotifyObservers("End");
-        // Time.timeScale = 0;
+  
+       if (outroTimeline != null)
+        {
+            outroTimeline.stopped += OnOuttroFinished;
+            outroTimeline.Play();
+        }
+        Subject.NotifyObservers("End");
     } 
 }
